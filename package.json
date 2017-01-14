@@ -1,0 +1,16 @@
+{
+  "name": "node-watchdog",
+  "version": "1.0.0",
+  "description": "A node watchdog script to monitor network hosts via icmp ping",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "abhishek",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.17.1",
+    "ping": "^0.2.1",
+    "sendgrid": "^4.7.1"
+  }
+}
