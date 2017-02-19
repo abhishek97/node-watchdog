@@ -72,38 +72,39 @@ function checkHosts() {
                 host.anyProblem = false;
                 return ;
             }
-            if(isAlive)
-                return;
-
-
-            host.anyProblem = true;
-            let from = new helper.Email("networkmonitor@alphanetbroadband.com"),
-                to = new helper.Email("sales@alphanetbroadband.com"),
-                subject = "Network WatchDog Ping Failed",
-                content = new helper.Content("text/html" , `
-            Ping to the following host failed: ${host.hostname}  </br>
+            if(!isAlive && !host.anyProblem )
+            {
+                let from = new helper.Email("networkmonitor@alphanetbroadband.com"),
+                    to = new helper.Email("sales@alphanetbroadband.com"),
+                    subject = "Network WatchDog Ping Down",
+                    content = new helper.Content("text/html" , `
+            Ping to the following host is <b>DOWN</b> now: ${host.hostname}  </br>
             Description : ${host.description}
             Last checked : ${moment().format("dddd, MMMM Do YYYY, h:mm:ss a")}
             `);
 
-            const mail = new helper.Mail(from , subject , to , content);
-            const sg = require('sendgrid')(config.sendgrindAPI);
-            const request = sg.emptyRequest({
-                method : 'POST',
-                path : '/v3/mail/send',
-                body : mail.toJSON()
-            });
-            sg.API(request , function (err , response) {
-                if(err)
-                {
-                    console.error("cannot send host email. Error : " , err);
-                }
-                else
-                {
-                    console.log("Email Sent!");
-                    intervalTime = 30000;
-                }
-            });
+                const mail = new helper.Mail(from , subject , to , content);
+                const sg = require('sendgrid')(config.sendgrindAPI);
+                const request = sg.emptyRequest({
+                    method : 'POST',
+                    path : '/v3/mail/send',
+                    body : mail.toJSON()
+                });
+                sg.API(request , function (err , response) {
+                    if(err)
+                    {
+                        console.error("cannot send host email. Error : " , err);
+                    }
+                    else
+                    {
+                        console.log("Email Sent!");
+                        intervalTime = 30000;
+                    }
+                });
+
+                host.anyProblem = true;
+                return ;
+            }
         });
     });
 
